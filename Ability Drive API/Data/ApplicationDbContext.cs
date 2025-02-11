@@ -35,6 +35,7 @@ namespace Ability_Drive_API.Data
                     Id = 1,
                     FirstName = "John",
                     LastName = "Doe",
+                    Email = "email@gmail.com",
                     PhoneNumber = "1234567890",
                     IsDisabled = false,
                     Password = "password123",

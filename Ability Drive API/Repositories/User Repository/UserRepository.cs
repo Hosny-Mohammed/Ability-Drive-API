@@ -21,6 +21,7 @@ namespace Ability_Drive_API.Repositories.User_Repository
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 PhoneNumber = dto.PhoneNumber,
+                Email = dto.Email,
                 IsDisabled = dto.IsDisabled,
                 Password = dto.Password,
                 CreatedAt = DateTime.UtcNow
@@ -47,9 +48,9 @@ namespace Ability_Drive_API.Repositories.User_Repository
             return await _context.Users.FindAsync(userId);
         }
 
-        public async Task<bool> UserExistsAsync(string phoneNumber)
+        public async Task<bool> UserExistsAsync(string email)
         {
-            return await _context.Users.AnyAsync(u => u.PhoneNumber == phoneNumber);
+            return await _context.Users.AnyAsync(u => u.Email == email);
         }
     }
 }

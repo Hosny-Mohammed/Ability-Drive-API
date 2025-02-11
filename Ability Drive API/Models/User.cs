@@ -20,6 +20,8 @@ namespace Ability_Drive_API.Models
         [MaxLength(15)]
         [Phone]
         public string PhoneNumber { get; set; }
+        [Required,EmailAddress]
+        public string Email { get; set; }
 
         [Required]
         public bool IsDisabled { get; set; }

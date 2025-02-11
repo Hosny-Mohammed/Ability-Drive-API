@@ -17,6 +17,10 @@ namespace Ability_Drive_API.DTOs
         [MaxLength(15, ErrorMessage = "Phone number cannot exceed 15 characters.")]
         public string PhoneNumber { get; set; }
 
+        [Required(ErrorMessage = "Email is required.")]
+        [EmailAddress(ErrorMessage = "Invalid Email Address.")]
+        public string Email { get; set; }
+
         [Required(ErrorMessage = "Password is required.")]
         [MinLength(8, ErrorMessage = "Password must be at least 8 characters.")]
         public string Password { get; set; }
