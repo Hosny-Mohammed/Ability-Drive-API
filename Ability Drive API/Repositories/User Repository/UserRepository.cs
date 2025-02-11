@@ -32,13 +32,13 @@ namespace Ability_Drive_API.Repositories.User_Repository
             return user;
         }
 
-        public async Task<User> LoginAsync(UserLoginDTO dto)
+        public async Task<User?> LoginAsync(UserLoginDTO dto)
         {
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.PhoneNumber == dto.PhoneNumber);
 
-            if (user == null ||  (dto.Password != user.Password))
-                throw new UnauthorizedAccessException("Invalid credentials");
+            if (user == null || (dto.Password != user.Password))
+                return null;
 
             return user;
         }
