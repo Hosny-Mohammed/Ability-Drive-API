@@ -250,18 +250,12 @@ namespace Ability_Drive_API.Migrations
                     b.Property<int?>("DriverId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("EndTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("PickupLocation")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("RequestTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("StartTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Status")

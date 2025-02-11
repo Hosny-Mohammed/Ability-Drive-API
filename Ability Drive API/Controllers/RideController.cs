@@ -32,12 +32,14 @@ namespace Ability_Drive_API.Controllers
         [HttpPost("bus/{userId}/{busScheduleId}")]
         public async Task<IActionResult> BookBusSeat(int userId, int busScheduleId)
         {
-            var seatBooking = await _rideRepository.BookBusSeatAsync(userId, busScheduleId);
-            if (seatBooking == null)
+            var seatBookingDTO = await _rideRepository.BookBusSeatAsync(userId, busScheduleId);
+
+            if (seatBookingDTO == null)
                 return BadRequest(new { status = false, message = "No available seats for the selected bus." });
 
-            return Ok(new { status = true, message = "Bus seat booked successfully", seatBooking });
+            return Ok(new { status = true, message = "Bus seat booked successfully", seatBooking = seatBookingDTO });
         }
+
 
         [HttpGet("bus-schedules")]
         public async Task<IActionResult> GetBusSchedules()

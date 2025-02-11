@@ -25,9 +25,9 @@ namespace Ability_Drive_API.Models
         [Required]
         public DateTime RequestTime { get; set; } = DateTime.UtcNow;
 
-        public DateTime? StartTime { get; set; }
+        //public DateTime? StartTime { get; set; }
 
-        public DateTime? EndTime { get; set; }
+        //public DateTime? EndTime { get; set; }
 
         [Required]
         [Column(TypeName = "decimal(18, 2)")]

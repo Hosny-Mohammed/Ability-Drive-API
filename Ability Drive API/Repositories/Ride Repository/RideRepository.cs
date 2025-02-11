@@ -55,7 +55,7 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
             return ride;
         }
 
-        public async Task<SeatBooking?> BookBusSeatAsync(int userId, int busScheduleId)
+        public async Task<SeatBookingDTO?> BookBusSeatAsync(int userId, int busScheduleId)
         {
             var busSchedule = await _context.BusSchedules.FindAsync(busScheduleId);
             if (busSchedule == null || busSchedule.AvailableNormalSeats == 0)
@@ -76,8 +76,19 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
 
             await _context.SeatBookings.AddAsync(seatBooking);
             await _context.SaveChangesAsync();
-            return seatBooking;
+
+            // Return a DTO instead of the full entity
+            return new SeatBookingDTO
+            {
+                Id = seatBooking.Id,
+                BusScheduleId = seatBooking.BusScheduleId,
+                UserId = seatBooking.UserId,
+                IsDisabledPassenger = seatBooking.IsDisabledPassenger,
+                BookingTime = seatBooking.BookingTime,
+                Status = seatBooking.Status
+            };
         }
+
 
         public async Task<IEnumerable<BusSchedule>> GetBusSchedulesAsync()
         {

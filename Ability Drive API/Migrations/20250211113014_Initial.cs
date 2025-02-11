@@ -130,8 +130,6 @@ namespace Ability_Drive_API.Migrations
                     PickupLocation = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Destination = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     RequestTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    StartTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Cost = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     CancellationReason = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true)
