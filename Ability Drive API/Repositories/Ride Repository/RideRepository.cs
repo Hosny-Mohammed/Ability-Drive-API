@@ -16,6 +16,24 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
 
         public async Task<Ride> CreateRideAsync(int userId, RideRequestDTO dto)
         {
+            if (dto.BusScheduleId.HasValue)
+            {
+                var seatBooking = await BookBusSeatAsync(userId, dto.BusScheduleId.Value);
+                if (seatBooking == null)
+                {
+                    throw new Exception("No available seats for the selected bus.");
+                }
+
+                return new Ride
+                {
+                    UserId = userId,
+                    PickupLocation = dto.PickupLocation,
+                    Destination = dto.Destination,
+                    Status = "Confirmed",
+                    RequestTime = DateTime.UtcNow
+                };
+            }
+
             var ride = new Ride
             {
                 UserId = userId,
@@ -30,6 +48,35 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
             return ride;
         }
 
+        public async Task<SeatBooking?> BookBusSeatAsync(int userId, int busScheduleId)
+        {
+            var busSchedule = await _context.BusSchedules.FindAsync(busScheduleId);
+            if (busSchedule == null || busSchedule.AvailableNormalSeats == 0)
+            {
+                return null; // No available seats
+            }
+
+            busSchedule.AvailableNormalSeats -= 1;
+
+            var seatBooking = new SeatBooking
+            {
+                BusScheduleId = busScheduleId,
+                UserId = userId,
+                IsDisabledPassenger = false,
+                BookingTime = DateTime.UtcNow,
+                Status = BookingStatus.Confirmed
+            };
+
+            await _context.SeatBookings.AddAsync(seatBooking);
+            await _context.SaveChangesAsync();
+            return seatBooking;
+        }
+
+        public async Task<IEnumerable<BusSchedule>> GetBusSchedulesAsync()
+        {
+            return await _context.BusSchedules.ToListAsync();
+        }
+
         public async Task<Ride?> GetRideByIdAsync(int rideId)
         {
             return await _context.Rides.FindAsync(rideId);
@@ -38,7 +85,7 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
         public async Task<IEnumerable<Ride>> GetPendingRidesAsync()
         {
             return await _context.Rides
-                .Where(r => r.Status == "Pending")
+                .Where(r => r.Status == "Pending" && r.DriverId == null) // Ensure it's unassigned
                 .ToListAsync();
         }
 
@@ -49,6 +96,21 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
 
             ride.Status = status;
             ride.DriverId = driverId;
+
+            await _context.SaveChangesAsync();
+            return ride;
+        }
+
+        public async Task<Ride?> AssignDriverToRideAsync(int rideId, int driverId)
+        {
+            var ride = await _context.Rides.FindAsync(rideId);
+            if (ride == null || ride.Status != "Pending" || ride.DriverId != null)
+            {
+                return null; // Ride not found, already assigned, or not available
+            }
+
+            ride.DriverId = driverId;
+            ride.Status = "Confirmed"; // Driver has accepted the ride
 
             await _context.SaveChangesAsync();
             return ride;

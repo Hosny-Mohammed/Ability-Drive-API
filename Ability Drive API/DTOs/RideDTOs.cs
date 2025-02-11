@@ -5,15 +5,16 @@ namespace Ability_Drive_API.DTOs
     public class RideRequestDTO
     {
         [Required(ErrorMessage = "Pickup location is required.")]
-        [MaxLength(100, ErrorMessage = "Pickup location cannot exceed 100 characters.")]
+        [MaxLength(100)]
         public string PickupLocation { get; set; }
 
         [Required(ErrorMessage = "Destination is required.")]
-        [MaxLength(100, ErrorMessage = "Destination cannot exceed 100 characters.")]
+        [MaxLength(100)]
         public string Destination { get; set; }
 
-        public int? PaymentMethodId { get; set; }
+        public int? BusScheduleId { get; set; } // Optional: Provided when booking from home page bus list
     }
+
 
     public class RideStatusUpdateDTO
     {
