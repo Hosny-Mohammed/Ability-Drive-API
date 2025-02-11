@@ -20,13 +20,13 @@ namespace Ability_Drive_API.Controllers
         public async Task<IActionResult> Login([FromBody] DriverLoginDTO loginDto)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return BadRequest(new { status = false, message = "Invalid input data", errors = ModelState });
 
             var driver = await _driverRepository.AuthenticateDriverAsync(loginDto);
             if (driver == null)
-                return Unauthorized("Invalid license number or password.");
+                return Unauthorized(new { status = false, message = "Invalid license number or password." });
 
-            return Ok(new { message = "Login successful", driverId = driver.Id, driverName = driver.Name });
+            return Ok(new { status = true, message = "Login successful", driverId = driver.Id, driverName = driver.Name });
         }
 
         [HttpGet("profile/{driverId}")]
@@ -34,23 +34,28 @@ namespace Ability_Drive_API.Controllers
         {
             var driver = await _driverRepository.GetDriverByIdAsync(driverId);
             if (driver == null)
-                return NotFound("Driver not found.");
+                return NotFound(new { status = false, message = "Driver not found." });
 
             return Ok(new
             {
-                driverId = driver.Id,
-                driverName = driver.Name,
-                licenseNumber = driver.LicenseNumber,
-                vehicleType = driver.VehicleType,
-                rating = driver.Rating,
-                isAvailable = driver.IsAvailable
+                status = true,
+                message = "Driver profile retrieved successfully",
+                driver = new
+                {
+                    driverId = driver.Id,
+                    driverName = driver.Name,
+                    licenseNumber = driver.LicenseNumber,
+                    vehicleType = driver.VehicleType,
+                    rating = driver.Rating,
+                    isAvailable = driver.IsAvailable
+                }
             });
         }
 
         [HttpGet("logout")]
         public IActionResult Logout()
         {
-            return Ok("Logged out successfully. (Client should clear stored driver ID)");
+            return Ok(new { status = true, message = "Logged out successfully. (Client should clear stored driver ID)" });
         }
     }
 }

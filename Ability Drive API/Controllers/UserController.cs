@@ -1,7 +1,7 @@
 ﻿using Ability_Drive_API.DTOs;
 using Ability_Drive_API.Repositories.User_Repository;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Ability_Drive_API.Controllers
 {
@@ -20,27 +20,47 @@ namespace Ability_Drive_API.Controllers
         public async Task<IActionResult> Register([FromBody] UserRegisterDTO dto)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return BadRequest(new { status = false, message = "Invalid input data", errors = ModelState });
 
             var user = await _userRepository.RegisterAsync(dto);
-            return Ok(user);
+
+            if (user == null)
+                return StatusCode(500, new { status = false, message = "Failed to register user" });
+
+            return Ok(new { status = true, message = "User registered successfully", user });
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginDTO dto)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return BadRequest(new { status = false, message = "Invalid input data", errors = ModelState });
 
             var user = await _userRepository.LoginAsync(dto);
-            return Ok(user);
+            if (user == null)
+                return Unauthorized(new { status = false, message = "Invalid email or password." });
+
+            return Ok(new { status = true, message = "Login successful", userId = user.Id, userName = $"{user.FirstName} {user.LastName}" });
         }
 
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetUser(int userId)
         {
             var user = await _userRepository.GetUserByIdAsync(userId);
-            return user == null ? NotFound() : Ok(user);
+            if (user == null)
+                return NotFound(new { status = false, message = "User not found." });
+
+            return Ok(new
+            {
+                status = true,
+                message = "User retrieved successfully",
+                user = new
+                {
+                    userId = user.Id,
+                    userName = $"{user.FirstName} {user.LastName}",
+                    email = user.Email
+                }
+            });
         }
     }
 }

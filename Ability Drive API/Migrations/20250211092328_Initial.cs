@@ -46,7 +46,9 @@ namespace Ability_Drive_API.Migrations
                     VehicleRegistration = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Rating = table.Column<decimal>(type: "decimal(3,2)", nullable: false),
                     IsAvailable = table.Column<bool>(type: "bit", nullable: false),
-                    CurrentLocation = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true)
+                    LastKnownLocation = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -62,6 +64,7 @@ namespace Ability_Drive_API.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsDisabled = table.Column<bool>(type: "bit", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -69,6 +72,29 @@ namespace Ability_Drive_API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CreditCards",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    CardHolderName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    CardNumber = table.Column<string>(type: "nvarchar(19)", maxLength: 19, nullable: false),
+                    ExpiryDate = table.Column<string>(type: "nvarchar(7)", maxLength: 7, nullable: false),
+                    ZipCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CreditCards", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CreditCards_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -162,13 +188,18 @@ namespace Ability_Drive_API.Migrations
 
             migrationBuilder.InsertData(
                 table: "Drivers",
-                columns: new[] { "Id", "CurrentLocation", "IsAvailable", "LicenseNumber", "Name", "Rating", "VehicleRegistration", "VehicleType" },
-                values: new object[] { 1, null, true, "DRV12345", "Alice Smith", 4.8m, "ABC123", "Sedan" });
+                columns: new[] { "Id", "IsAvailable", "LastKnownLocation", "LicenseNumber", "Name", "Password", "PhoneNumber", "Rating", "VehicleRegistration", "VehicleType" },
+                values: new object[] { 1, true, null, "DRV12345", "Alice Smith", "pass#123", "01134896510", 4.8m, "ABC123", "Sedan" });
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "CreatedAt", "FirstName", "IsDisabled", "LastName", "Password", "PhoneNumber" },
-                values: new object[] { 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "John", false, "Doe", "password123", "1234567890" });
+                columns: new[] { "Id", "CreatedAt", "Email", "FirstName", "IsDisabled", "LastName", "Password", "PhoneNumber" },
+                values: new object[] { 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "email@gmail.com", "John", false, "Doe", "password123", "1234567890" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CreditCards_UserId",
+                table: "CreditCards",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PaymentMethods_UserId",
@@ -199,6 +230,9 @@ namespace Ability_Drive_API.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "CreditCards");
+
             migrationBuilder.DropTable(
                 name: "PaymentMethods");
 

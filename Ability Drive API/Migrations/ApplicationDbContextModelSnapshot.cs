@@ -137,12 +137,12 @@ namespace Ability_Drive_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CurrentLocation")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("bit");
+
+                    b.Property<string>("LastKnownLocation")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("LicenseNumber")
                         .IsRequired()
@@ -153,6 +153,16 @@ namespace Ability_Drive_API.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<decimal>("Rating")
                         .HasColumnType("decimal(3, 2)");
@@ -178,6 +188,8 @@ namespace Ability_Drive_API.Migrations
                             IsAvailable = true,
                             LicenseNumber = "DRV12345",
                             Name = "Alice Smith",
+                            Password = "pass#123",
+                            PhoneNumber = "01134896510",
                             Rating = 4.8m,
                             VehicleRegistration = "ABC123",
                             VehicleType = "Sedan"

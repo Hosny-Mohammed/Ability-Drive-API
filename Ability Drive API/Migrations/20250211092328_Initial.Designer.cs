@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ability_Drive_API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250210101302_Initial")]
+    [Migration("20250211092328_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -94,6 +94,44 @@ namespace Ability_Drive_API.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Ability_Drive_API.Models.CreditCard", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CardHolderName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("CardNumber")
+                        .IsRequired()
+                        .HasMaxLength(19)
+                        .HasColumnType("nvarchar(19)");
+
+                    b.Property<string>("ExpiryDate")
+                        .IsRequired()
+                        .HasMaxLength(7)
+                        .HasColumnType("nvarchar(7)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ZipCode")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CreditCards");
+                });
+
             modelBuilder.Entity("Ability_Drive_API.Models.Driver", b =>
                 {
                     b.Property<int>("Id")
@@ -102,12 +140,12 @@ namespace Ability_Drive_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CurrentLocation")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("bit");
+
+                    b.Property<string>("LastKnownLocation")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("LicenseNumber")
                         .IsRequired()
@@ -118,6 +156,16 @@ namespace Ability_Drive_API.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<decimal>("Rating")
                         .HasColumnType("decimal(3, 2)");
@@ -143,6 +191,8 @@ namespace Ability_Drive_API.Migrations
                             IsAvailable = true,
                             LicenseNumber = "DRV12345",
                             Name = "Alice Smith",
+                            Password = "pass#123",
+                            PhoneNumber = "01134896510",
                             Rating = 4.8m,
                             VehicleRegistration = "ABC123",
                             VehicleType = "Sedan"
@@ -278,6 +328,10 @@ namespace Ability_Drive_API.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -310,12 +364,24 @@ namespace Ability_Drive_API.Migrations
                         {
                             Id = 1,
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "email@gmail.com",
                             FirstName = "John",
                             IsDisabled = false,
                             LastName = "Doe",
                             Password = "password123",
                             PhoneNumber = "1234567890"
                         });
+                });
+
+            modelBuilder.Entity("Ability_Drive_API.Models.CreditCard", b =>
+                {
+                    b.HasOne("Ability_Drive_API.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Ability_Drive_API.Models.PaymentMethod", b =>

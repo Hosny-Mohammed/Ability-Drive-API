@@ -50,7 +50,9 @@ namespace Ability_Drive_API.Data
                 {
                     Id = 1,
                     Name = "Alice Smith",
+                    Password = "pass#123",
                     LicenseNumber = "DRV12345",
+                    PhoneNumber = "01134896510",
                     VehicleType = "Sedan",
                     VehicleRegistration = "ABC123",
                     Rating = 4.8m,

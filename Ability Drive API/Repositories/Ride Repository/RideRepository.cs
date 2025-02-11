@@ -2,6 +2,8 @@
 using Ability_Drive_API.DTOs;
 using Ability_Drive_API.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Ability_Drive_API.Repositories.Ride_Repository
 {
@@ -16,6 +18,8 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
 
         public async Task<Ride> CreateRideAsync(int userId, RideRequestDTO dto)
         {
+            Ride ride;
+
             if (dto.BusScheduleId.HasValue)
             {
                 var seatBooking = await BookBusSeatAsync(userId, dto.BusScheduleId.Value);
@@ -24,7 +28,7 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
                     throw new Exception("No available seats for the selected bus.");
                 }
 
-                return new Ride
+                ride = new Ride
                 {
                     UserId = userId,
                     PickupLocation = dto.PickupLocation,
@@ -33,18 +37,21 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
                     RequestTime = DateTime.UtcNow
                 };
             }
-
-            var ride = new Ride
+            else
             {
-                UserId = userId,
-                PickupLocation = dto.PickupLocation,
-                Destination = dto.Destination,
-                Status = "Pending",
-                RequestTime = DateTime.UtcNow
-            };
+                ride = new Ride
+                {
+                    UserId = userId,
+                    PickupLocation = dto.PickupLocation,
+                    Destination = dto.Destination,
+                    Status = "Pending",
+                    RequestTime = DateTime.UtcNow
+                };
 
-            await _context.Rides.AddAsync(ride);
-            await _context.SaveChangesAsync();
+                await _context.Rides.AddAsync(ride);
+                await _context.SaveChangesAsync();
+            }
+
             return ride;
         }
 
@@ -85,7 +92,7 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
         public async Task<IEnumerable<Ride>> GetPendingRidesAsync()
         {
             return await _context.Rides
-                .Where(r => r.Status == "Pending" && r.DriverId == null) // Ensure it's unassigned
+                .Where(r => r.Status == "Pending" && r.DriverId == null)
                 .ToListAsync();
         }
 
@@ -110,7 +117,7 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
             }
 
             ride.DriverId = driverId;
-            ride.Status = "Confirmed"; // Driver has accepted the ride
+            ride.Status = "Confirmed";
 
             await _context.SaveChangesAsync();
             return ride;
