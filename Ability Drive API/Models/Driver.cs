@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Ability_Drive_API.Models
 {
@@ -27,13 +27,23 @@ namespace Ability_Drive_API.Models
 
         [Required]
         [Column(TypeName = "decimal(3, 2)")]
+        [Range(0.0, 5.0, ErrorMessage = "Rating must be between 0 and 5.")]
         public decimal Rating { get; set; } = 5.0m;
 
         [Required]
         public bool IsAvailable { get; set; } = true;
 
         [MaxLength(100)]
-        public string? CurrentLocation { get; set; }
+        public string? LastKnownLocation { get; set; } // Renamed from CurrentLocation
+
+        [Required]
+        [MaxLength(15)]
+        [Phone]
+        public string PhoneNumber { get; set; } // New: Driver contact info
+
+        [Required]
+        [MaxLength(255)]
+        public string Password { get; set; } // New: Added for login authentication
 
         // Navigation property
         public ICollection<Ride> Rides { get; set; } = new List<Ride>();
