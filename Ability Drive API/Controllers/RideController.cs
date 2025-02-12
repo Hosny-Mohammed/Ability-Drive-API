@@ -28,7 +28,7 @@ namespace Ability_Drive_API.Controllers
             return Ok(new { status = true, message = "Private ride booked successfully", ride });
         }
 
-        [HttpPost("bus/{userId}/{busScheduleId}")]
+        [HttpPatch("bus/{userId}/{busScheduleId}")]
         public async Task<IActionResult> BookBusSeat(int userId, int busScheduleId)
         {
             var seatBookingDTO = await _rideRepository.BookBusSeatAsync(userId, busScheduleId);
