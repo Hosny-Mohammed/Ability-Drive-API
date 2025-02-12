@@ -17,13 +17,13 @@ namespace Ability_Drive_API.Controllers
         }
 
         // ✅ Book a Private Ride
-        [HttpPost("private/{userId}")]
-        public async Task<IActionResult> CreatePrivateRide(int userId, [FromBody] RideRequestDTO dto)
+        [HttpPost("private/{userId}/driver/{driverId}")]
+        public async Task<IActionResult> CreatePrivateRide(int userId, int driverId, [FromBody] RideRequestDTO dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(new { status = false, message = "Invalid input data", errors = ModelState });
 
-            var ride = await _rideRepository.CreateRideAsync(userId, dto);
+            var ride = await _rideRepository.CreateRideAsync(userId, driverId, dto);
 
             return Ok(new { status = true, message = "Private ride booked successfully", ride });
         }
@@ -70,16 +70,16 @@ namespace Ability_Drive_API.Controllers
             return Ok(new { status = true, message = "Ride status updated successfully", ride });
         }
 
-        [HttpPut("{rideId}/assign-driver/{driverId}")]
-        public async Task<IActionResult> AssignDriverToRide(int rideId, int driverId)
-        {
-            var ride = await _rideRepository.AssignDriverToRideAsync(rideId, driverId);
-            if (ride == null)
-            {
-                return BadRequest(new { status = false, message = "Ride not found or already assigned." });
-            }
+        //[HttpPut("{rideId}/assign-driver/{driverId}")]
+        //public async Task<IActionResult> AssignDriverToRide(int rideId, int driverId)
+        //{
+        //    var ride = await _rideRepository.AssignDriverToRideAsync(rideId, driverId);
+        //    if (ride == null)
+        //    {
+        //        return BadRequest(new { status = false, message = "Ride not found or already assigned." });
+        //    }
 
-            return Ok(new { status = true, message = "Ride assigned to driver successfully", ride });
-        }
+        //    return Ok(new { status = true, message = "Ride assigned to driver successfully", ride });
+        //}
     }
 }

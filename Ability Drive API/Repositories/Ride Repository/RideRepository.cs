@@ -17,7 +17,7 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
             _context = context;
         }
 
-        public async Task<Ride> CreateRideAsync(int userId, RideRequestDTO dto)
+        public async Task<Ride> CreateRideAsync(int userId,int driverId ,RideRequestDTO dto)
         {
             // Calculate ride cost using the static method in CalculateRideCostClass
             decimal rideCost = Ability_Drive_API.Service.CalculateRideCostClass.CalculateRideCost(dto.PickupLocation, dto.Destination);
@@ -26,6 +26,7 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
             Ride ride = new Ride
             {
                 UserId = userId,
+                DriverId = driverId,
                 PickupLocation = dto.PickupLocation,
                 Destination = dto.Destination,
                 Status = "Pending", // Default to Pending, can be updated later based on business logic
@@ -41,11 +42,6 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
         }
 
 
-
-        private decimal CalculateRideCostClass(string pickupLocation, string destination)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<SeatBookingDTO?> BookBusSeatAsync(int userId, int busScheduleId)
         {
