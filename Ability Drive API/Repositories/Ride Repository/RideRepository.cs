@@ -102,6 +102,7 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
             };
 
             // Save changes to the database
+            _context.BusSchedules.Update(busSchedule);
             await _context.SeatBookings.AddAsync(seatBooking);
             await _context.SaveChangesAsync();
 
