@@ -12,4 +12,18 @@ namespace Ability_Drive_API.DTOs
         [MinLength(6, ErrorMessage = "Password must be at least 6 characters.")]
         public string Password { get; set; }
     }
+    public class DriverDTOGet
+    {
+        public int Id { get; set; }
+
+        public string Name { get; set; }
+
+        public string VehicleType { get; set; }
+
+        public bool IsAvailable { get; set; }
+
+        public string? LastKnownLocation { get; set; }
+
+        public string PhoneNumber { get; set; }
+    }
 }

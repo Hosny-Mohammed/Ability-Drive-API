@@ -52,6 +52,17 @@ namespace Ability_Drive_API.Controllers
             });
         }
 
+        [HttpGet("available-drivers")]
+        public async Task<IActionResult> GetAllAvailableDrivers()
+        {
+            var drivers = await _driverRepository.GetAllAvailableDriversAsync();
+
+            if (drivers == null || drivers.Count == 0)
+                return NotFound(new { status = false, message = "No available drivers found." });
+
+            return Ok(new { status = true, message = "Available drivers retrieved successfully", drivers });
+        }
+
         [HttpGet("logout")]
         public IActionResult Logout()
         {

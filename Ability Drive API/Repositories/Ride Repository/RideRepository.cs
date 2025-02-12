@@ -1,6 +1,7 @@
 ﻿using Ability_Drive_API.Data;
 using Ability_Drive_API.DTOs;
 using Ability_Drive_API.Models;
+using Ability_Drive_API.Service;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -18,41 +19,32 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
 
         public async Task<Ride> CreateRideAsync(int userId, RideRequestDTO dto)
         {
-            Ride ride;
+            // Calculate ride cost using the static method in CalculateRideCostClass
+            decimal rideCost = Ability_Drive_API.Service.CalculateRideCostClass.CalculateRideCost(dto.PickupLocation, dto.Destination);
 
-            if (dto.BusScheduleId.HasValue)
+            // Create the ride (default status set to "Pending")
+            Ride ride = new Ride
             {
-                var seatBooking = await BookBusSeatAsync(userId, dto.BusScheduleId.Value);
-                if (seatBooking == null)
-                {
-                    throw new Exception("No available seats for the selected bus.");
-                }
+                UserId = userId,
+                PickupLocation = dto.PickupLocation,
+                Destination = dto.Destination,
+                Status = "Pending", // Default to Pending, can be updated later based on business logic
+                RequestTime = DateTime.UtcNow,
+                Cost = rideCost
+            };
 
-                ride = new Ride
-                {
-                    UserId = userId,
-                    PickupLocation = dto.PickupLocation,
-                    Destination = dto.Destination,
-                    Status = "Confirmed",
-                    RequestTime = DateTime.UtcNow
-                };
-            }
-            else
-            {
-                ride = new Ride
-                {
-                    UserId = userId,
-                    PickupLocation = dto.PickupLocation,
-                    Destination = dto.Destination,
-                    Status = "Pending",
-                    RequestTime = DateTime.UtcNow
-                };
-
-                await _context.Rides.AddAsync(ride);
-                await _context.SaveChangesAsync();
-            }
+            // Save the ride to the database
+            await _context.Rides.AddAsync(ride);
+            await _context.SaveChangesAsync();
 
             return ride;
+        }
+
+
+
+        private decimal CalculateRideCostClass(string pickupLocation, string destination)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<SeatBookingDTO?> BookBusSeatAsync(int userId, int busScheduleId)

@@ -10,4 +10,5 @@ public interface IRideRepository
     Task<IEnumerable<BusSchedule>> GetBusSchedulesAsync();
     Task<SeatBookingDTO?> BookBusSeatAsync(int userId, int busScheduleId);
     Task<Ride?> AssignDriverToRideAsync(int rideId, int driverId); // NEW: Assign ride to driver
+    
 }

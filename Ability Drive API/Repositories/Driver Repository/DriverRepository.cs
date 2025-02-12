@@ -25,6 +25,23 @@ namespace Ability_Drive_API.Repositories.Driver_Repository
 
             return driver; // Successful login
         }
+        public async Task<List<DriverDTOGet>> GetAllAvailableDriversAsync()
+        {
+            var availableDrivers = await _context.Drivers
+                .Where(d => d.IsAvailable)
+                .Select(d => new DriverDTOGet
+                {
+                    Id = d.Id,
+                    Name = d.Name,
+                    VehicleType = d.VehicleType,
+                    IsAvailable = d.IsAvailable,
+                    LastKnownLocation = d.LastKnownLocation,
+                    PhoneNumber = d.PhoneNumber
+                })
+                .ToListAsync();
+
+            return availableDrivers;
+        }
         public async Task<Driver?> GetDriverByIdAsync(int driverId)
         {
             return await _context.Drivers
