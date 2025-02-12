@@ -25,5 +25,8 @@ namespace Ability_Drive_API.DTOs
         public string? LastKnownLocation { get; set; }
 
         public string PhoneNumber { get; set; }
+
+        public decimal Rating { get; set; } 
     }
+
 }
