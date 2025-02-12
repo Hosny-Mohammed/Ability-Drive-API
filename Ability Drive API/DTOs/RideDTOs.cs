@@ -12,7 +12,6 @@ namespace Ability_Drive_API.DTOs
         [MaxLength(100)]
         public string Destination { get; set; }
 
-        public int? BusScheduleId { get; set; } // Optional: Provided when booking from home page bus list
     }
 
 
