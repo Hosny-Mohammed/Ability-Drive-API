@@ -64,7 +64,7 @@ namespace Ability_Drive_API.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     IsDisabled = table.Column<bool>(type: "bit", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -91,28 +91,6 @@ namespace Ability_Drive_API.Migrations
                     table.PrimaryKey("PK_CreditCards", x => x.Id);
                     table.ForeignKey(
                         name: "FK_CreditCards_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PaymentMethods",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Details = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    IsDefault = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PaymentMethods", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PaymentMethods_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -200,11 +178,6 @@ namespace Ability_Drive_API.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PaymentMethods_UserId",
-                table: "PaymentMethods",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Rides_DriverId",
                 table: "Rides",
                 column: "DriverId");
@@ -223,6 +196,18 @@ namespace Ability_Drive_API.Migrations
                 name: "IX_SeatBookings_UserId",
                 table: "SeatBookings",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Email",
+                table: "Users",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_PhoneNumber",
+                table: "Users",
+                column: "PhoneNumber",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -230,9 +215,6 @@ namespace Ability_Drive_API.Migrations
         {
             migrationBuilder.DropTable(
                 name: "CreditCards");
-
-            migrationBuilder.DropTable(
-                name: "PaymentMethods");
 
             migrationBuilder.DropTable(
                 name: "Rides");

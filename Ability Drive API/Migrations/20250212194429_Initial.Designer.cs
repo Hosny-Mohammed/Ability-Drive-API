@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ability_Drive_API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250211113014_Initial")]
+    [Migration("20250212194429_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -199,37 +199,6 @@ namespace Ability_Drive_API.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Ability_Drive_API.Models.PaymentMethod", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Details")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<bool>("IsDefault")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("PaymentMethods");
-                });
-
             modelBuilder.Entity("Ability_Drive_API.Models.Ride", b =>
                 {
                     b.Property<int>("Id")
@@ -324,7 +293,7 @@ namespace Ability_Drive_API.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -351,6 +320,12 @@ namespace Ability_Drive_API.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("PhoneNumber")
+                        .IsUnique();
+
                     b.ToTable("Users");
 
                     b.HasData(
@@ -371,17 +346,6 @@ namespace Ability_Drive_API.Migrations
                 {
                     b.HasOne("Ability_Drive_API.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Ability_Drive_API.Models.PaymentMethod", b =>
-                {
-                    b.HasOne("Ability_Drive_API.Models.User", "User")
-                        .WithMany("PaymentMethods")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -437,8 +401,6 @@ namespace Ability_Drive_API.Migrations
 
             modelBuilder.Entity("Ability_Drive_API.Models.User", b =>
                 {
-                    b.Navigation("PaymentMethods");
-
                     b.Navigation("Rides");
 
                     b.Navigation("SeatBookings");
