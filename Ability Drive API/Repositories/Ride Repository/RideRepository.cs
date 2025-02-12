@@ -57,23 +57,51 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
 
         public async Task<SeatBookingDTO?> BookBusSeatAsync(int userId, int busScheduleId)
         {
-            var busSchedule = await _context.BusSchedules.FindAsync(busScheduleId);
-            if (busSchedule == null || busSchedule.AvailableNormalSeats == 0)
+            // Fetch user details to determine if they are disabled
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
             {
-                return null; // No available seats
+                throw new Exception("User not found.");
             }
 
-            busSchedule.AvailableNormalSeats -= 1;
+            // Fetch the bus schedule
+            var busSchedule = await _context.BusSchedules.FindAsync(busScheduleId);
+            if (busSchedule == null)
+            {
+                throw new Exception("Bus schedule not found.");
+            }
 
+            // Check availability based on the user's disabled status
+            if (user.IsDisabled)
+            {
+                if (busSchedule.AvailableDisabledSeats == 0)
+                {
+                    return null; // No available seats for disabled passengers
+                }
+
+                busSchedule.AvailableDisabledSeats -= 1;
+            }
+            else
+            {
+                if (busSchedule.AvailableNormalSeats == 0)
+                {
+                    return null; // No available seats for normal passengers
+                }
+
+                busSchedule.AvailableNormalSeats -= 1;
+            }
+
+            // Create a new seat booking
             var seatBooking = new SeatBooking
             {
                 BusScheduleId = busScheduleId,
                 UserId = userId,
-                IsDisabledPassenger = false,
+                IsDisabledPassenger = user.IsDisabled, // Set based on user's profile
                 BookingTime = DateTime.UtcNow,
                 Status = BookingStatus.Confirmed
             };
 
+            // Save changes to the database
             await _context.SeatBookings.AddAsync(seatBooking);
             await _context.SaveChangesAsync();
 
@@ -88,6 +116,7 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
                 Status = seatBooking.Status
             };
         }
+
 
 
         public async Task<IEnumerable<BusSchedule>> GetBusSchedulesAsync()

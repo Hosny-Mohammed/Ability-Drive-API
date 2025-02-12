@@ -12,7 +12,6 @@ namespace Ability_Drive_API.Data
 
         // DbSets for all models
         public DbSet<User> Users { get; set; }
-        public DbSet<PaymentMethod> PaymentMethods { get; set; }
         public DbSet<Ride> Rides { get; set; }
         public DbSet<Driver> Drivers { get; set; }
         public DbSet<BusSchedule> BusSchedules { get; set; }
@@ -22,7 +21,13 @@ namespace Ability_Drive_API.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
 
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.PhoneNumber)
+                .IsUnique();
             // Seed initial data (optional)
             SeedData(modelBuilder);
         }

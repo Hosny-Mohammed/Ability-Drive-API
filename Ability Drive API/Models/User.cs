@@ -34,7 +34,6 @@ namespace Ability_Drive_API.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation properties
-        public ICollection<PaymentMethod> PaymentMethods { get; set; } = new List<PaymentMethod>();
         public ICollection<Ride> Rides { get; set; } = new List<Ride>();
         public ICollection<SeatBooking> SeatBookings { get; set; } = new List<SeatBooking>();
     }
