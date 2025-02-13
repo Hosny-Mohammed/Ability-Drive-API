@@ -15,7 +15,7 @@ namespace Ability_Drive_API.Repositories
             _context = context;
         }
 
-        public async Task<bool> AddPaymentMethodAsync(CreditCardCreateDTO cardDto, int userId)
+        public async Task<bool> AddCardAsync(CreditCardCreateDTO cardDto, int userId)
         {
             try
             {

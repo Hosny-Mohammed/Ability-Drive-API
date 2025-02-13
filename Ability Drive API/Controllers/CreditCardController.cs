@@ -16,18 +16,18 @@ namespace Ability_Drive_API.Controllers
             _creditCardRepository = creditCardRepository;
         }
 
-        [HttpPost("add-payment-method/{userId}")]
-        public async Task<IActionResult> AddPaymentMethod(int userId, [FromBody] CreditCardCreateDTO cardDto)
+        [HttpPost("AddCard/{userId}")]
+        public async Task<IActionResult> AddCard(int userId, [FromBody] CreditCardCreateDTO cardDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(new { status = false, message = "Invalid input data", errors = ModelState });
 
-            bool success = await _creditCardRepository.AddPaymentMethodAsync(cardDto, userId);
+            bool success = await _creditCardRepository.AddCardAsync(cardDto, userId);
 
             if (!success)
                 return StatusCode(500, new { status = false, message = "Failed to add payment method" });
 
-            return Ok(new { status = true, message = "Payment method added successfully" });
+            return Ok(new { status = true, message = "Card added successfully" });
         }
     }
 }

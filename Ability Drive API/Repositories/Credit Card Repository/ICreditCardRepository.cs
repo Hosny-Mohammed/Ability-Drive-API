@@ -5,6 +5,6 @@ namespace Ability_Drive_API.Repositories
 {
     public interface ICreditCardRepository
     {
-        Task<bool> AddPaymentMethodAsync(CreditCardCreateDTO cardDto, int userId);
+        Task<bool> AddCardAsync(CreditCardCreateDTO cardDto, int userId);
     }
 }
