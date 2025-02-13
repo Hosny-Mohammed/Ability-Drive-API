@@ -16,9 +16,12 @@ namespace Ability_Drive_API.DTOs
         [MaxLength(7)]
         public string ExpiryDate { get; set; } // Format: MM/YYYY
 
+        [Required(ErrorMessage = "Security Code (CVV) is required.")]
+        [StringLength(4, MinimumLength = 3, ErrorMessage = "Security Code must be 3 or 4 digits.")]
+        public string SecurityCode { get; set; } // CVV/CVC (not stored)
+
         [Required(ErrorMessage = "Zip Code is required.")]
         [MaxLength(10)]
-        public string ZipCode { get; set; } // New field for Zip Code
+        public string ZipCode { get; set; } // Billing ZIP code
     }
-
 }
