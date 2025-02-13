@@ -26,7 +26,9 @@ namespace Ability_Drive_API.DTOs
 
         public string PhoneNumber { get; set; }
 
-        public decimal Rating { get; set; } 
+        public decimal Rating { get; set; }
+
+        public List<string> PreferredLocations { get; set; } = new List<string>(); // Added preferred locations
     }
 
 }

@@ -37,12 +37,14 @@ namespace Ability_Drive_API.Repositories.Driver_Repository
                     IsAvailable = d.IsAvailable,
                     LastKnownLocation = d.LastKnownLocation,
                     PhoneNumber = d.PhoneNumber,
-                    Rating = d.Rating
+                    Rating = d.Rating,
+                    PreferredLocations = d.PreferredLocations // Include preferred locations
                 })
                 .ToListAsync();
 
             return availableDrivers;
         }
+
 
         public async Task<Driver?> GetDriverByIdAsync(int driverId)
         {

@@ -34,16 +34,19 @@ namespace Ability_Drive_API.Models
         public bool IsAvailable { get; set; } = true;
 
         [MaxLength(100)]
-        public string? LastKnownLocation { get; set; } // Renamed from CurrentLocation
+        public string? LastKnownLocation { get; set; }
 
         [Required]
         [MaxLength(15)]
         [Phone]
-        public string PhoneNumber { get; set; } // New: Driver contact info
+        public string PhoneNumber { get; set; }
 
         [Required]
         [MaxLength(255)]
-        public string Password { get; set; } // New: Added for login authentication
+        public string Password { get; set; }
+
+        [Required]
+        public List<string> PreferredLocations { get; set; } = new List<string>(); // Preferred locations in Egypt
 
         // Navigation property
         public ICollection<Ride> Rides { get; set; } = new List<Ride>();

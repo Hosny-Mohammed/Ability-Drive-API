@@ -61,7 +61,21 @@ namespace Ability_Drive_API.Data
                     VehicleType = "Sedan",
                     VehicleRegistration = "ABC123",
                     Rating = 4.8m,
-                    IsAvailable = true
+                    IsAvailable = true,
+                    PreferredLocations = new List<string> { "Cairo", "Giza", "Alexandria" } // Example locations in Egypt
+                }, 
+                new Driver
+                {
+                    Id = 2,
+                    Name = "Ali Mohammed",
+                    Password = "pass#123",
+                    LicenseNumber = "DRV12345",
+                    PhoneNumber = "01111111111",
+                    VehicleType = "Sedan",
+                    VehicleRegistration = "ABC123",
+                    Rating = 4.8m,
+                    IsAvailable = true,
+                    PreferredLocations = new List<string> { "6th october", "Helwan", "Nasr City" }
                 }
             );
 

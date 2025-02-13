@@ -17,8 +17,24 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
             _context = context;
         }
 
-        public async Task<Ride> CreateRideAsync(int userId,int driverId ,RideRequestDTO dto)
+        public async Task<Ride> CreateRideAsync(int userId, int driverId, RideRequestDTO dto)
         {
+            // Retrieve the driver from the database including their preferred locations
+            var driver = await _context.Drivers
+                .Where(d => d.Id == driverId)
+                .FirstOrDefaultAsync();
+
+            if (driver == null)
+            {
+                throw new ArgumentException("Driver not found.");
+            }
+
+            // Check if the destination is in the driver's preferred locations
+            if (!driver.PreferredLocations.Contains(dto.Destination))
+            {
+                throw new InvalidOperationException("The selected driver does not prefer this destination.");
+            }
+
             // Calculate ride cost using the static method in CalculateRideCostClass
             decimal rideCost = Ability_Drive_API.Service.CalculateRideCostClass.CalculateRideCost(dto.PickupLocation, dto.Destination);
 
@@ -40,6 +56,7 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
 
             return ride;
         }
+
 
 
 
