@@ -53,15 +53,20 @@ namespace Ability_Drive_API.Controllers
         }
 
         [HttpGet("available-drivers")]
-        public async Task<IActionResult> GetAllAvailableDrivers()
+        public async Task<IActionResult> GetAllAvailableDrivers(
+            [FromQuery] string? preferredLocation = null,
+            [FromQuery] string? lastKnownLocation = null)
         {
-            var drivers = await _driverRepository.GetAllAvailableDriversAsync();
+            var drivers = await _driverRepository.GetAllAvailableDriversAsync(preferredLocation, lastKnownLocation);
 
             if (drivers == null || drivers.Count == 0)
+            {
                 return NotFound(new { status = false, message = "No available drivers found." });
+            }
 
             return Ok(new { status = true, message = "Available drivers retrieved successfully", drivers });
         }
+
 
         [HttpGet("logout")]
         public IActionResult Logout()

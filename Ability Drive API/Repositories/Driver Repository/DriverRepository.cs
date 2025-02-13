@@ -25,10 +25,21 @@ namespace Ability_Drive_API.Repositories.Driver_Repository
 
             return driver; // Successful login
         }
-        public async Task<List<DriverDTOGet>> GetAllAvailableDriversAsync()
+        public async Task<List<DriverDTOGet>> GetAllAvailableDriversAsync(string? preferredLocation = null, string? lastKnownLocation = null)
         {
-            var availableDrivers = await _context.Drivers
-                .Where(d => d.IsAvailable)
+            var query = _context.Drivers.Where(d => d.IsAvailable);
+
+            if (!string.IsNullOrEmpty(preferredLocation))
+            {
+                query = query.Where(d => d.PreferredLocations.Contains(preferredLocation));
+            }
+
+            if (!string.IsNullOrEmpty(lastKnownLocation))
+            {
+                query = query.Where(d => d.LastKnownLocation == lastKnownLocation);
+            }
+
+            var availableDrivers = await query
                 .Select(d => new DriverDTOGet
                 {
                     Id = d.Id,
@@ -38,12 +49,13 @@ namespace Ability_Drive_API.Repositories.Driver_Repository
                     LastKnownLocation = d.LastKnownLocation,
                     PhoneNumber = d.PhoneNumber,
                     Rating = d.Rating,
-                    PreferredLocations = d.PreferredLocations // Include preferred locations
+                    PreferredLocations = d.PreferredLocations
                 })
                 .ToListAsync();
 
             return availableDrivers;
         }
+
 
 
         public async Task<Driver?> GetDriverByIdAsync(int driverId)
