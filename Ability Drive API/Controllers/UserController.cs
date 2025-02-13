@@ -54,12 +54,7 @@ namespace Ability_Drive_API.Controllers
             {
                 status = true,
                 message = "User retrieved successfully",
-                user = new
-                {
-                    userId = user.Id,
-                    userName = $"{user.FirstName} {user.LastName}",
-                    email = user.Email
-                }
+                user = user
             });
         }
     }
