@@ -38,4 +38,15 @@ namespace Ability_Drive_API.DTOs
         [Required(ErrorMessage = "Password is required.")]
         public string Password { get; set; }
     }
+    public class UserWithDetailsDTO
+    {
+        public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Email { get; set; }
+        public bool IsDisabled { get; set; }
+        public IEnumerable<RideDTOForOther> Rides { get; set; }
+        public IEnumerable<SeatBookingDTOForOther> SeatBookings { get; set; }
+    }
 }

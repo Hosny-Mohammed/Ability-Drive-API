@@ -24,4 +24,12 @@ namespace Ability_Drive_API.DTOs
         [MaxLength(200, ErrorMessage = "Reason cannot exceed 200 characters.")]
         public string? Reason { get; set; }
     }
+    public class RideDTOForOther
+    {
+        public int Id { get; set; }
+        public string PickupLocation { get; set; }
+        public string Destination { get; set; }
+        public decimal Cost { get; set; }
+        public string Status { get; set; }
+    }
 }

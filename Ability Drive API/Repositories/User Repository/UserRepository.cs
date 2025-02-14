@@ -14,8 +14,9 @@ namespace Ability_Drive_API.Repositories.User_Repository
             _context = context;
         }
 
-        public async Task<User> RegisterAsync(UserRegisterDTO dto)
+        public async Task<UserWithDetailsDTO> RegisterAsync(UserRegisterDTO dto)
         {
+            // Create the user entity
             var user = new User
             {
                 FirstName = dto.FirstName,
@@ -27,21 +28,67 @@ namespace Ability_Drive_API.Repositories.User_Repository
                 CreatedAt = DateTime.UtcNow
             };
 
+            // Add the user to the database
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
-            return user;
+
+            // Return the user data as a DTO with empty rides and seat bookings
+            var userDto = new UserWithDetailsDTO
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                Email = user.Email,
+                IsDisabled = user.IsDisabled,
+                Rides = new List<RideDTOForOther>(), // Newly registered users have no rides
+                SeatBookings = new List<SeatBookingDTOForOther>() // Newly registered users have no seat bookings
+            };
+
+            return userDto;
         }
 
-        public async Task<User?> LoginAsync(UserLoginDTO dto)
+
+        public async Task<UserWithDetailsDTO?> LoginAsync(UserLoginDTO dto)
         {
             var user = await _context.Users
+                .Include(u => u.Rides)
+                .Include(u => u.SeatBookings)
                 .FirstOrDefaultAsync(u => u.PhoneNumber == dto.PhoneNumber);
 
             if (user == null || (dto.Password != user.Password))
                 return null;
 
-            return user;
+            // Map the User to the DTO
+            var userDto = new UserWithDetailsDTO
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                Email = user.Email,
+                IsDisabled = user.IsDisabled,
+                Rides = user.Rides.Select(r => new RideDTOForOther
+                {
+                    Id = r.Id,
+                    PickupLocation = r.PickupLocation,
+                    Destination = r.Destination,
+                    Cost = r.Cost,
+                    Status = r.Status
+                }),
+                SeatBookings = user.SeatBookings.Select(sb => new SeatBookingDTOForOther
+                {
+                    Id = sb.Id,
+                    BusScheduleId = sb.BusScheduleId,
+                    IsDisabledPassenger = sb.IsDisabledPassenger,
+                    BookingTime = sb.BookingTime,
+                    Status = sb.Status
+                })
+            };
+
+            return userDto;
         }
+
 
         public async Task<User?> GetUserByIdAsync(int userId)
         {
