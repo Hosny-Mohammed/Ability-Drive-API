@@ -3,6 +3,7 @@ using Ability_Drive_API.Repositories;
 using Ability_Drive_API.Repositories.Driver_Repository;
 using Ability_Drive_API.Repositories.Ride_Repository;
 using Ability_Drive_API.Repositories.User_Repository;
+using Ability_Drive_API.Repositories.Voucher_Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,8 +18,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(x => x.UseSqlServer(builder.
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRideRepository, RideRepository>();
-builder.Services.AddScoped<ICreditCardRepository, CreditCardRepository>();
 builder.Services.AddScoped<IDriverRepository, DriverRepository>();
+builder.Services.AddScoped<IVoucherRepository, VoucherRepository>();
 
 var app = builder.Build();
 

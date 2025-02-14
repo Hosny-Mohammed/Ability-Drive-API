@@ -16,14 +16,13 @@ namespace Ability_Drive_API.Controllers
             _rideRepository = rideRepository;
         }
 
-        // ✅ Book a Private Ride
         [HttpPost("private/{userId}/driver/{driverId}")]
-        public async Task<IActionResult> CreatePrivateRide(int userId, int driverId, [FromBody] RideRequestDTO dto)
+        public async Task<IActionResult> CreatePrivateRide(int userId, int driverId, [FromBody] RideRequestDTO dto, [FromQuery] string voucherCode = null)
         {
             if (!ModelState.IsValid)
                 return BadRequest(new { status = false, message = "Invalid input data", errors = ModelState });
 
-            var ride = await _rideRepository.CreateRideAsync(userId, driverId, dto);
+            var ride = await _rideRepository.CreateRideAsync(userId, driverId, dto, voucherCode);
 
             return Ok(new { status = true, message = "Private ride booked successfully", ride });
         }
@@ -40,8 +39,6 @@ namespace Ability_Drive_API.Controllers
 
             return Ok(new { status = true, message = "Bus seat booked successfully", seatBooking = seatBookingDTO });
         }
-
-
 
         [HttpGet("bus-schedules")]
         public async Task<IActionResult> GetBusSchedules()
@@ -69,17 +66,5 @@ namespace Ability_Drive_API.Controllers
 
             return Ok(new { status = true, message = "Ride status updated successfully", ride });
         }
-
-        //[HttpPut("{rideId}/assign-driver/{driverId}")]
-        //public async Task<IActionResult> AssignDriverToRide(int rideId, int driverId)
-        //{
-        //    var ride = await _rideRepository.AssignDriverToRideAsync(rideId, driverId);
-        //    if (ride == null)
-        //    {
-        //        return BadRequest(new { status = false, message = "Ride not found or already assigned." });
-        //    }
-
-        //    return Ok(new { status = true, message = "Ride assigned to driver successfully", ride });
-        //}
     }
 }

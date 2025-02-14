@@ -1,6 +1,7 @@
 ﻿using Ability_Drive_API.Data;
 using Ability_Drive_API.DTOs;
 using Ability_Drive_API.Models;
+using Ability_Drive_API.Repositories.Voucher_Repository;
 using Ability_Drive_API.Service;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -11,13 +12,15 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
     public class RideRepository : IRideRepository
     {
         private readonly ApplicationDbContext _context;
+        private readonly IVoucherRepository _voucherRepository;
 
-        public RideRepository(ApplicationDbContext context)
+        public RideRepository(ApplicationDbContext context, IVoucherRepository voucherRepository)
         {
             _context = context;
+            _voucherRepository = voucherRepository;
         }
 
-        public async Task<Ride> CreateRideAsync(int userId, int driverId, RideRequestDTO dto)
+        public async Task<Ride> CreateRideAsync(int userId, int driverId, RideRequestDTO dto, string voucherCode = null)
         {
             // Retrieve the driver from the database including their preferred locations
             var driver = await _context.Drivers
@@ -36,7 +39,22 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
             }
 
             // Calculate ride cost using the static method in CalculateRideCostClass
-            decimal rideCost = Ability_Drive_API.Service.CalculateRideCostClass.CalculateRideCost(dto.PickupLocation, dto.Destination);
+            decimal rideCost = CalculateRideCostClass.CalculateRideCost(dto.PickupLocation, dto.Destination);
+
+            // Apply voucher discount if available
+            if (!string.IsNullOrEmpty(voucherCode))
+            {
+                var voucher = await _voucherRepository.GetVoucherByCodeAsync(voucherCode);
+                if (voucher != null && voucher.ExpiryDate >= DateTime.UtcNow)
+                {
+                    var hasUsed = await _voucherRepository.HasUserUsedVoucherAsync(userId, voucherCode);
+                    if (!hasUsed)
+                    {
+                        rideCost -= voucher.Discount;
+                        rideCost = Math.Max(rideCost, 0); // Ensure cost doesn't go below zero
+                    }
+                }
+            }
 
             // Create the ride (default status set to "Pending")
             Ride ride = new Ride
@@ -56,8 +74,6 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
 
             return ride;
         }
-
-
 
 
         public async Task<SeatBookingDTO?> BookBusSeatAsync(int userId, int busScheduleId)
