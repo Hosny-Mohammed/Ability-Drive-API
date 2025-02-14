@@ -16,7 +16,8 @@ namespace Ability_Drive_API.Data
         public DbSet<Driver> Drivers { get; set; }
         public DbSet<BusSchedule> BusSchedules { get; set; }
         public DbSet<SeatBooking> SeatBookings { get; set; }
-        public DbSet<CreditCard> CreditCards { get; set; }
+        public DbSet<Voucher> Vouchers { get; set; }
+        public DbSet<UserVoucher> UserVouchers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
