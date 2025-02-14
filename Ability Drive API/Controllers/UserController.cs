@@ -82,7 +82,7 @@ namespace Ability_Drive_API.Controllers
 
                 // Check if login was successful
                 if (userDto == null)
-                    return Unauthorized(new
+                    return Ok(new
                     {
                         status = false,
                         message = "Invalid phone number or password."

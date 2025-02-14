@@ -24,7 +24,7 @@ namespace Ability_Drive_API.Controllers
 
             var driver = await _driverRepository.AuthenticateDriverAsync(loginDto);
             if (driver == null)
-                return Unauthorized(new { status = false, message = "Invalid license number or password." });
+                return Ok(new { status = false, message = "Invalid license number or password." });
 
             return Ok(new { status = true, message = "Login successful", driverId = driver.Id, driverName = driver.Name });
         }
@@ -67,11 +67,5 @@ namespace Ability_Drive_API.Controllers
             return Ok(new { status = true, message = "Available drivers retrieved successfully", drivers });
         }
 
-
-        [HttpGet("logout")]
-        public IActionResult Logout()
-        {
-            return Ok(new { status = true, message = "Logged out successfully. (Client should clear stored driver ID)" });
-        }
     }
 }
