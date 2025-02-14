@@ -39,12 +39,6 @@ namespace Ability_Drive_API.Models
         [Required]
         public bool IsWheelchairAccessible { get; set; }
 
-        [Required]
-        public bool HasPrioritySeating { get; set; }
-
-        [Required]
-        public bool HasAudioAnnouncements { get; set; }
-
         // Navigation property
         public ICollection<SeatBooking> SeatBookings { get; set; } = new List<SeatBooking>();
     }
