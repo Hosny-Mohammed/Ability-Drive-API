@@ -22,20 +22,34 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
 
         public async Task<(bool IsSuccess, string Message, Ride? Ride)> CreateRideAsync(int userId, int driverId, RideRequestDTO dto, string voucherCode = null)
         {
-            // Retrieve the driver from the database including their preferred locations
+            // Retrieve the driver from the database including their preferred locations and last known location
             var driver = await _context.Drivers
                 .Where(d => d.Id == driverId)
                 .FirstOrDefaultAsync();
 
             if (driver == null)
             {
-                return (false, "Driver not found.", null);
+                return (false, "driver not found.", null);
             }
 
+            // Ensure preferred locations are compared case-insensitively
+            var preferredLocations = driver.PreferredLocations
+                .Select(location => location.ToLower())
+                .ToList();
+
+            var destinationLower = dto.Destination.ToLower();
+
             // Check if the destination is in the driver's preferred locations
-            if (!driver.PreferredLocations.Contains(dto.Destination))
+            if (!preferredLocations.Contains(destinationLower))
             {
-                return (false, "The selected driver does not prefer this destination.", null);
+                return (false, "the selected driver does not prefer this destination.", null);
+            }
+
+            // Check if the driver's last known location is far from the pickup location
+            if (!string.IsNullOrEmpty(driver.LastKnownLocation) &&
+                driver.LastKnownLocation.ToLower() != dto.PickupLocation.ToLower())
+            {
+                return (false, "the driver is too far from the pickup location.", null);
             }
 
             // Calculate ride cost using the static method in CalculateRideCostClass
@@ -55,12 +69,12 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
                     }
                     else
                     {
-                        return (false, "Voucher has already been used.", null);
+                        return (false, "voucher has already been used.", null);
                     }
                 }
                 else
                 {
-                    return (false, "Invalid or expired voucher code.", null);
+                    return (false, "invalid or expired voucher code.", null);
                 }
             }
 
@@ -71,7 +85,7 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
                 DriverId = driverId,
                 PickupLocation = dto.PickupLocation,
                 Destination = dto.Destination,
-                Status = "Pending", // Default to Pending, can be updated later based on business logic
+                Status = "pending", // Default to Pending, can be updated later based on business logic
                 RequestTime = DateTime.UtcNow,
                 Cost = rideCost
             };
@@ -80,8 +94,9 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
             await _context.Rides.AddAsync(ride);
             await _context.SaveChangesAsync();
 
-            return (true, "Ride created successfully.", ride);
+            return (true, "ride created successfully.", ride);
         }
+
 
 
 
