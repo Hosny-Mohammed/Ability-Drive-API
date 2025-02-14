@@ -49,12 +49,6 @@ namespace Ability_Drive_API.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<bool>("HasAudioAnnouncements")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("HasPrioritySeating")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsWheelchairAccessible")
                         .HasColumnType("bit");
 
@@ -82,51 +76,37 @@ namespace Ability_Drive_API.Migrations
                             BusNumber = "B101",
                             DepartureTime = new DateTime(2024, 1, 1, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             FromLocation = "City Center",
-                            HasAudioAnnouncements = true,
-                            HasPrioritySeating = true,
                             IsWheelchairAccessible = true,
                             ToLocation = "North Station",
                             TotalDisabledSeats = 2,
                             TotalNormalSeats = 20
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AvailableDisabledSeats = 3,
+                            AvailableNormalSeats = 30,
+                            BusNumber = "B102",
+                            DepartureTime = new DateTime(2024, 2, 1, 2, 0, 0, 0, DateTimeKind.Unspecified),
+                            FromLocation = "East Station",
+                            IsWheelchairAccessible = true,
+                            ToLocation = "West Station",
+                            TotalDisabledSeats = 3,
+                            TotalNormalSeats = 30
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AvailableDisabledSeats = 2,
+                            AvailableNormalSeats = 25,
+                            BusNumber = "B103",
+                            DepartureTime = new DateTime(2024, 3, 1, 3, 0, 0, 0, DateTimeKind.Unspecified),
+                            FromLocation = "South Station",
+                            IsWheelchairAccessible = true,
+                            ToLocation = "Central Station",
+                            TotalDisabledSeats = 2,
+                            TotalNormalSeats = 25
                         });
-                });
-
-            modelBuilder.Entity("Ability_Drive_API.Models.CreditCard", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CardHolderName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("CardNumber")
-                        .IsRequired()
-                        .HasMaxLength(19)
-                        .HasColumnType("nvarchar(19)");
-
-                    b.Property<string>("ExpiryDate")
-                        .IsRequired()
-                        .HasMaxLength(7)
-                        .HasColumnType("nvarchar(7)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ZipCode")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("CreditCards");
                 });
 
             modelBuilder.Entity("Ability_Drive_API.Models.Driver", b =>
@@ -207,10 +187,23 @@ namespace Ability_Drive_API.Migrations
                             Name = "Ali Mohammed",
                             Password = "pass#123",
                             PhoneNumber = "01111111111",
-                            PreferredLocations = "[\"6th october\",\"Helwan\",\"Nasr City\"]",
+                            PreferredLocations = "[\"6th October\",\"Helwan\",\"Nasr City\"]",
                             Rating = 4.8m,
                             VehicleRegistration = "ABC123",
                             VehicleType = "Sedan"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            IsAvailable = true,
+                            LicenseNumber = "DRV67890",
+                            Name = "Sarah Johnson",
+                            Password = "pass#789",
+                            PhoneNumber = "0222333444",
+                            PreferredLocations = "[\"Maadi\",\"Zamalek\",\"New Cairo\"]",
+                            Rating = 4.9m,
+                            VehicleRegistration = "XYZ789",
+                            VehicleType = "SUV"
                         });
                 });
 
@@ -260,6 +253,41 @@ namespace Ability_Drive_API.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Rides");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Cost = 100m,
+                            Destination = "Giza",
+                            DriverId = 1,
+                            PickupLocation = "Cairo",
+                            RequestTime = new DateTime(2024, 1, 1, 2, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = "Completed",
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Cost = 150m,
+                            Destination = "Nasr City",
+                            DriverId = 2,
+                            PickupLocation = "Helwan",
+                            RequestTime = new DateTime(2024, 2, 1, 3, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = "Pending",
+                            UserId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Cost = 200m,
+                            Destination = "New Cairo",
+                            DriverId = 3,
+                            PickupLocation = "Maadi",
+                            RequestTime = new DateTime(2024, 3, 1, 4, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = "Ongoing",
+                            UserId = 3
+                        });
                 });
 
             modelBuilder.Entity("Ability_Drive_API.Models.SeatBooking", b =>
@@ -354,18 +382,79 @@ namespace Ability_Drive_API.Migrations
                             LastName = "Doe",
                             Password = "password123",
                             PhoneNumber = "1234567890"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2024, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "jane.smith@gmail.com",
+                            FirstName = "Jane",
+                            IsDisabled = true,
+                            LastName = "Smith",
+                            Password = "password321",
+                            PhoneNumber = "0987654321"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2024, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "bob.johnson@gmail.com",
+                            FirstName = "Bob",
+                            IsDisabled = false,
+                            LastName = "Johnson",
+                            Password = "password456",
+                            PhoneNumber = "1122334455"
                         });
                 });
 
-            modelBuilder.Entity("Ability_Drive_API.Models.CreditCard", b =>
+            modelBuilder.Entity("Ability_Drive_API.Models.UserVoucher", b =>
                 {
-                    b.HasOne("Ability_Drive_API.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Navigation("User");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("UsedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VoucherId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("VoucherId");
+
+                    b.ToTable("UserVouchers");
+                });
+
+            modelBuilder.Entity("Ability_Drive_API.Models.Voucher", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<decimal>("Discount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("ExpiryDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Vouchers");
                 });
 
             modelBuilder.Entity("Ability_Drive_API.Models.Ride", b =>
@@ -404,6 +493,25 @@ namespace Ability_Drive_API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Ability_Drive_API.Models.UserVoucher", b =>
+                {
+                    b.HasOne("Ability_Drive_API.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Ability_Drive_API.Models.Voucher", "Voucher")
+                        .WithMany("UserVouchers")
+                        .HasForeignKey("VoucherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+
+                    b.Navigation("Voucher");
+                });
+
             modelBuilder.Entity("Ability_Drive_API.Models.BusSchedule", b =>
                 {
                     b.Navigation("SeatBookings");
@@ -419,6 +527,11 @@ namespace Ability_Drive_API.Migrations
                     b.Navigation("Rides");
 
                     b.Navigation("SeatBookings");
+                });
+
+            modelBuilder.Entity("Ability_Drive_API.Models.Voucher", b =>
+                {
+                    b.Navigation("UserVouchers");
                 });
 #pragma warning restore 612, 618
         }
