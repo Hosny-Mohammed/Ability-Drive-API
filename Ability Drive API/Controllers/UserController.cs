@@ -30,14 +30,24 @@ namespace Ability_Drive_API.Controllers
 
             try
             {
-                // Register user
-                var userDto = await _userRepository.RegisterAsync(dto);
+                // Check registration and handle duplicates
+                var (isDuplicate, duplicateField, userDto) = await _userRepository.RegisterAsync(dto);
+
+                if (isDuplicate)
+                {
+                    return Ok(new
+                    {
+                        status = false,
+                        message = $"{duplicateField} is already in use.",
+                        duplicateField
+                    });
+                }
 
                 // Return success response with user data
                 return Ok(new
                 {
                     status = true,
-                    message = "User registered successfully",
+                    message = "User registered successfully.",
                     user = userDto
                 });
             }
@@ -47,7 +57,7 @@ namespace Ability_Drive_API.Controllers
                 return StatusCode(500, new
                 {
                     status = false,
-                    message = "Failed to register user",
+                    message = "Failed to register user.",
                     error = ex.Message
                 });
             }

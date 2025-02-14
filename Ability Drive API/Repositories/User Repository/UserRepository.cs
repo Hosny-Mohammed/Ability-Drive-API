@@ -14,8 +14,18 @@ namespace Ability_Drive_API.Repositories.User_Repository
             _context = context;
         }
 
-        public async Task<UserWithDetailsDTO> RegisterAsync(UserRegisterDTO dto)
+        public async Task<(bool IsDuplicate, string DuplicateField, UserWithDetailsDTO? UserDto)> RegisterAsync(UserRegisterDTO dto)
         {
+            // Check if the email or phone number already exists
+            var emailExists = await _context.Users.AnyAsync(u => u.Email == dto.Email);
+            var phoneNumberExists = await _context.Users.AnyAsync(u => u.PhoneNumber == dto.PhoneNumber);
+
+            if (emailExists)
+                return (true, "Email", null);
+
+            if (phoneNumberExists)
+                return (true, "PhoneNumber", null);
+
             // Create the user entity
             var user = new User
             {
@@ -32,7 +42,7 @@ namespace Ability_Drive_API.Repositories.User_Repository
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
 
-            // Return the user data as a DTO with empty rides and seat bookings
+            // Map the user data to a DTO
             var userDto = new UserWithDetailsDTO
             {
                 Id = user.Id,
@@ -45,8 +55,9 @@ namespace Ability_Drive_API.Repositories.User_Repository
                 SeatBookings = new List<SeatBookingDTOForOther>() // Newly registered users have no seat bookings
             };
 
-            return userDto;
+            return (false, null, userDto);
         }
+
 
 
         public async Task<UserWithDetailsDTO?> LoginAsync(UserLoginDTO dto)
