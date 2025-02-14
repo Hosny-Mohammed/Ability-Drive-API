@@ -52,46 +52,45 @@ namespace Ability_Drive_API.Repositories.User_Repository
         public async Task<UserWithDetailsDTO?> LoginAsync(UserLoginDTO dto)
         {
             var userDto = await _context.Users
-            .Where(u => u.PhoneNumber == dto.PhoneNumber)
-            .Select(u => new UserWithDetailsDTO
-            {
-                Id = u.Id,
-                FirstName = u.FirstName,
-                LastName = u.LastName,
-                PhoneNumber = u.PhoneNumber,
-                Email = u.Email,
-                IsDisabled = u.IsDisabled,
-                Rides = u.Rides.Select(r => new RideDTOForOther
-                {
-                    Id = r.Id,
-                    PickupLocation = r.PickupLocation,
-                    Destination = r.Destination,
-                    Cost = r.Cost,
-                    Status = r.Status
-                }).ToList(),
-                SeatBookings = u.SeatBookings.Select(sb => new SeatBookingDTOForOther
-                {
-                    Id = sb.Id,
-                    BusScheduleId = sb.BusScheduleId,
-                    IsDisabledPassenger = sb.IsDisabledPassenger,
-                    BookingTime = sb.BookingTime,
-                    Status = sb.Status
-                }).ToList()
-            })
-            .FirstOrDefaultAsync();
-
-            if (userDto == null || dto.Password != await _context.Users
                 .Where(u => u.PhoneNumber == dto.PhoneNumber)
-                .Select(u => u.Password)
-                .FirstOrDefaultAsync())
+                .Select(u => new
+                {
+                    User = new UserWithDetailsDTO
+                    {
+                        Id = u.Id,
+                        FirstName = u.FirstName,
+                        LastName = u.LastName,
+                        PhoneNumber = u.PhoneNumber,
+                        Email = u.Email,
+                        IsDisabled = u.IsDisabled,
+                        Rides = u.Rides.Select(r => new RideDTOForOther
+                        {
+                            Id = r.Id,
+                            PickupLocation = r.PickupLocation,
+                            Destination = r.Destination,
+                            Cost = r.Cost,
+                            Status = r.Status
+                        }).ToList(),
+                        SeatBookings = u.SeatBookings.Select(sb => new SeatBookingDTOForOther
+                        {
+                            Id = sb.Id,
+                            BusName = sb.BusSchedule.BusNumber, // Use navigation property
+                            IsDisabledPassenger = sb.IsDisabledPassenger,
+                            BookingTime = sb.BookingTime,
+                            Status = sb.Status
+                        }).ToList()
+                    },
+                    Password = u.Password
+                })
+                .FirstOrDefaultAsync();
+
+            if (userDto == null || dto.Password != userDto.Password)
             {
                 return null;
             }
 
-            return userDto;
-
+            return userDto.User;
         }
-
 
         public async Task<User?> GetUserByIdAsync(int userId)
         {
