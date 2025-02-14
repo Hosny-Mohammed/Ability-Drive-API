@@ -35,7 +35,7 @@ namespace Ability_Drive_API.Controllers
 
             if (seatBookingDTO == null)
             {
-                return BadRequest(new { status = false, message = "No available seats for the selected bus." });
+                return Ok(new { status = false, message = "No available seats for the selected bus." });
             }
 
             return Ok(new { status = true, message = "Bus seat booked successfully", seatBooking = seatBookingDTO });

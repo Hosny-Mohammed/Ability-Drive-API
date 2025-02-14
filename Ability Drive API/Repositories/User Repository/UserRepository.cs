@@ -51,42 +51,45 @@ namespace Ability_Drive_API.Repositories.User_Repository
 
         public async Task<UserWithDetailsDTO?> LoginAsync(UserLoginDTO dto)
         {
-            var user = await _context.Users
-                .Include(u => u.Rides)
-                .Include(u => u.SeatBookings)
-                .FirstOrDefaultAsync(u => u.PhoneNumber == dto.PhoneNumber);
-
-            if (user == null || (dto.Password != user.Password))
-                return null;
-
-            // Map the User to the DTO
-            var userDto = new UserWithDetailsDTO
+            var userDto = await _context.Users
+            .Where(u => u.PhoneNumber == dto.PhoneNumber)
+            .Select(u => new UserWithDetailsDTO
             {
-                Id = user.Id,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                PhoneNumber = user.PhoneNumber,
-                Email = user.Email,
-                IsDisabled = user.IsDisabled,
-                Rides = user.Rides.Select(r => new RideDTOForOther
+                Id = u.Id,
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                PhoneNumber = u.PhoneNumber,
+                Email = u.Email,
+                IsDisabled = u.IsDisabled,
+                Rides = u.Rides.Select(r => new RideDTOForOther
                 {
                     Id = r.Id,
                     PickupLocation = r.PickupLocation,
                     Destination = r.Destination,
                     Cost = r.Cost,
                     Status = r.Status
-                }),
-                SeatBookings = user.SeatBookings.Select(sb => new SeatBookingDTOForOther
+                }).ToList(),
+                SeatBookings = u.SeatBookings.Select(sb => new SeatBookingDTOForOther
                 {
                     Id = sb.Id,
                     BusScheduleId = sb.BusScheduleId,
                     IsDisabledPassenger = sb.IsDisabledPassenger,
                     BookingTime = sb.BookingTime,
                     Status = sb.Status
-                })
-            };
+                }).ToList()
+            })
+            .FirstOrDefaultAsync();
+
+            if (userDto == null || dto.Password != await _context.Users
+                .Where(u => u.PhoneNumber == dto.PhoneNumber)
+                .Select(u => u.Password)
+                .FirstOrDefaultAsync())
+            {
+                return null;
+            }
 
             return userDto;
+
         }
 
 
