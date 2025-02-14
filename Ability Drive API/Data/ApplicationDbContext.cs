@@ -84,6 +84,7 @@ namespace Ability_Drive_API.Data
                     VehicleType = "Sedan",
                     VehicleRegistration = "ABC123",
                     Rating = 4.8m,
+                    LastKnownLocation = "Cairo",
                     IsAvailable = true,
                     PreferredLocations = new List<string> { "Cairo", "Giza", "Alexandria" }
                 },
@@ -97,6 +98,7 @@ namespace Ability_Drive_API.Data
                     VehicleType = "Sedan",
                     VehicleRegistration = "ABC123",
                     Rating = 4.8m,
+                    LastKnownLocation = "Giza",
                     IsAvailable = true,
                     PreferredLocations = new List<string> { "6th October", "Helwan", "Nasr City" }
                 },
@@ -109,6 +111,7 @@ namespace Ability_Drive_API.Data
                     PhoneNumber = "0222333444",
                     VehicleType = "SUV",
                     VehicleRegistration = "XYZ789",
+                    LastKnownLocation = "Alexandria",
                     Rating = 4.9m,
                     IsAvailable = true,
                     PreferredLocations = new List<string> { "Maadi", "Zamalek", "New Cairo" }
