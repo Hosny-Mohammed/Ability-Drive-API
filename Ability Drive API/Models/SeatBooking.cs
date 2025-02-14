@@ -24,7 +24,6 @@ namespace Ability_Drive_API.Models
 
         [Required]
         [MaxLength(20)]
-        public BookingStatus Status { get; set; } = BookingStatus.Confirmed;
 
         // Navigation properties
         [ForeignKey("BusScheduleId")]

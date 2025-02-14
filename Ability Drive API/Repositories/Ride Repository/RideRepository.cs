@@ -20,7 +20,7 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
             _voucherRepository = voucherRepository;
         }
 
-        public async Task<Ride> CreateRideAsync(int userId, int driverId, RideRequestDTO dto, string voucherCode = null)
+        public async Task<(bool IsSuccess, string Message, Ride? Ride)> CreateRideAsync(int userId, int driverId, RideRequestDTO dto, string voucherCode = null)
         {
             // Retrieve the driver from the database including their preferred locations
             var driver = await _context.Drivers
@@ -29,13 +29,13 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
 
             if (driver == null)
             {
-                throw new ArgumentException("Driver not found.");
+                return (false, "Driver not found.", null);
             }
 
             // Check if the destination is in the driver's preferred locations
             if (!driver.PreferredLocations.Contains(dto.Destination))
             {
-                throw new InvalidOperationException("The selected driver does not prefer this destination.");
+                return (false, "The selected driver does not prefer this destination.", null);
             }
 
             // Calculate ride cost using the static method in CalculateRideCostClass
@@ -53,6 +53,14 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
                         rideCost -= voucher.Discount;
                         rideCost = Math.Max(rideCost, 0); // Ensure cost doesn't go below zero
                     }
+                    else
+                    {
+                        return (false, "Voucher has already been used.", null);
+                    }
+                }
+                else
+                {
+                    return (false, "Invalid or expired voucher code.", null);
                 }
             }
 
@@ -72,8 +80,9 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
             await _context.Rides.AddAsync(ride);
             await _context.SaveChangesAsync();
 
-            return ride;
+            return (true, "Ride created successfully.", ride);
         }
+
 
 
         public async Task<SeatBookingDTO?> BookBusSeatAsync(int userId, int busScheduleId)
@@ -119,7 +128,6 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
                 UserId = userId,
                 IsDisabledPassenger = user.IsDisabled, // Set based on user's profile
                 BookingTime = DateTime.UtcNow,
-                Status = BookingStatus.Confirmed
             };
 
             // Save changes to the database
@@ -135,7 +143,6 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
                 UserId = seatBooking.UserId,
                 IsDisabledPassenger = seatBooking.IsDisabledPassenger,
                 BookingTime = seatBooking.BookingTime,
-                Status = seatBooking.Status
             };
         }
 
@@ -146,16 +153,19 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
             return await _context.BusSchedules.ToListAsync();
         }
 
-        public async Task<Ride?> GetRideByIdAsync(int rideId)
-        {
-            return await _context.Rides.FindAsync(rideId);
-        }
 
-        public async Task<IEnumerable<Ride>> GetPendingRidesAsync()
+        public async Task<IEnumerable<RideDTOForOther>> GetPendingRidesByDriverIdAsync(int driverId)
         {
             return await _context.Rides
-                .Where(r => r.Status == "Pending" && r.DriverId == null)
-                .ToListAsync();
+                                 .Where(r => r.Status == "Pending" && r.DriverId == driverId)
+                                 .Select(r => new RideDTOForOther
+                                 {
+                                     PickupLocation = r.PickupLocation,
+                                     Destination = r.Destination,
+                                     Cost = r.Cost,
+                                     Status = r.Status
+                                 })
+                                 .ToListAsync();
         }
 
         public async Task<Ride> UpdateRideStatusAsync(int rideId, string status, int? driverId = null)

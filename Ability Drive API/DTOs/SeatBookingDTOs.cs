@@ -9,7 +9,6 @@ namespace Ability_Drive_API.DTOs
         public int UserId { get; set; }
         public bool IsDisabledPassenger { get; set; }
         public DateTime BookingTime { get; set; }
-        public BookingStatus Status { get; set; }
     }
     public class SeatBookingDTOForOther
     {
@@ -17,7 +16,6 @@ namespace Ability_Drive_API.DTOs
         public string BusName { get; set; }
         public bool IsDisabledPassenger { get; set; }
         public DateTime BookingTime { get; set; }
-        public BookingStatus Status { get; set; }
     }
 
 }

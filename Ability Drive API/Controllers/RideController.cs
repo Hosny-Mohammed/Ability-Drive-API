@@ -22,10 +22,18 @@ namespace Ability_Drive_API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(new { status = false, message = "Invalid input data", errors = ModelState });
 
-            var ride = await _rideRepository.CreateRideAsync(userId, driverId, dto, voucherCode);
+            var (isSuccess, message, ride) = await _rideRepository.CreateRideAsync(userId, driverId, dto, voucherCode);
 
-            return Ok(new { status = true, message = "Private ride booked successfully", ride });
+            if (isSuccess)
+            {
+                return Ok(new { status = true, message = message, ride = ride });
+            }
+            else
+            {
+                return Ok(new { status = false, message = message });
+            }
         }
+
 
         [HttpPatch("bus/{userId}/{busScheduleId}")]
         public async Task<IActionResult> BookBusSeat(int userId, int busScheduleId)
@@ -48,9 +56,9 @@ namespace Ability_Drive_API.Controllers
         }
 
         [HttpGet("available-rides")]
-        public async Task<IActionResult> GetAvailableRides()
+        public async Task<IActionResult> GetAvailableRides([FromQuery] int driverId)
         {
-            var rides = await _rideRepository.GetPendingRidesAsync();
+            var rides = await _rideRepository.GetPendingRidesByDriverIdAsync(driverId);
             return Ok(new { status = true, message = "Available rides retrieved successfully", rides });
         }
 

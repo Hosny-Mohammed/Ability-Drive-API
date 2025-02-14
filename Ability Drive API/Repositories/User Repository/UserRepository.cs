@@ -77,7 +77,6 @@ namespace Ability_Drive_API.Repositories.User_Repository
                             BusName = sb.BusSchedule.BusNumber, // Use navigation property
                             IsDisabledPassenger = sb.IsDisabledPassenger,
                             BookingTime = sb.BookingTime,
-                            Status = sb.Status
                         }).ToList()
                     },
                     Password = u.Password
