@@ -32,4 +32,16 @@ namespace Ability_Drive_API.DTOs
         public decimal Cost { get; set; }
         public string Status { get; set; }
     }
+    public class RideDTO
+    {
+        public int Id { get; set; }
+        public int UserId { get; set; }
+        public int DriverId { get; set; }
+        public string PickupLocation { get; set; }
+        public string Destination { get; set; }
+        public string Status { get; set; }
+        public decimal Cost { get; set; }
+        public DateTime RequestTime { get; set; }
+    }
+
 }

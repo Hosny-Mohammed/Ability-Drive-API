@@ -56,8 +56,6 @@ namespace Ability_Drive_API.Repositories.Driver_Repository
             return availableDrivers;
         }
 
-
-
         public async Task<Driver?> GetDriverByIdAsync(int driverId)
         {
             return await _context.Drivers
