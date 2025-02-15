@@ -56,6 +56,15 @@ namespace Ability_Drive_API.Repositories.Driver_Repository
             return availableDrivers;
         }
 
+        public async Task<bool> UpdateDriverAvailabilityAsync(int driverId, bool isAvailable)
+        {
+            var driver = await _context.Drivers.FindAsync(driverId);
+            if (driver == null) return false;
+
+            driver.IsAvailable = isAvailable;
+            await _context.SaveChangesAsync();
+            return true;
+        }
         public async Task<Driver?> GetDriverByIdAsync(int driverId)
         {
             return await _context.Drivers

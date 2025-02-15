@@ -9,5 +9,6 @@ namespace Ability_Drive_API.Repositories.Driver_Repository
         Task<Driver?> AuthenticateDriverAsync(DriverLoginDTO loginDto);
         Task<Driver?> GetDriverByIdAsync(int driverId);
         Task<List<DriverDTOGet>> GetAllAvailableDriversAsync(string? preferredLocation = null, string? lastKnownLocation = null);
+        Task<bool> UpdateDriverAvailabilityAsync(int driverId, bool isAvailable);
     }
 }

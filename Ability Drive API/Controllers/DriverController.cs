@@ -24,7 +24,7 @@ namespace Ability_Drive_API.Controllers
 
             var driver = await _driverRepository.AuthenticateDriverAsync(loginDto);
             if (driver == null)
-                return Ok(new { status = false, message = "Invalid license number or password." });
+                return NotFound(new { status = false, message = "Invalid license number or password." });
 
             return Ok(new { status = true, message = "Login successful", driverId = driver.Id, driverName = driver.Name });
         }
@@ -50,6 +50,14 @@ namespace Ability_Drive_API.Controllers
                     isAvailable = driver.IsAvailable
                 }
             });
+        }
+        [HttpPut("availability/{driverId}")]
+        public async Task<IActionResult> UpdateAvailability(int driverId, [FromQuery] bool isAvailable)
+        {
+            var result = await _driverRepository.UpdateDriverAvailabilityAsync(driverId, isAvailable);
+            if (!result) return NotFound(new { status = false, message = "Driver not found or update failed." });
+
+            return Ok(new { status = true, message = "Driver availability updated successfully." });
         }
 
         [HttpGet("available-drivers")]
