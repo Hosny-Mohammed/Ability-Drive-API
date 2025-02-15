@@ -68,7 +68,7 @@ namespace Ability_Drive_API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(new { status = false, message = "Invalid input data", errors = ModelState });
 
-            var ride = await _rideRepository.UpdateRideStatusAsync(rideId, dto.Status);
+            var ride = await _rideRepository.UpdateRideStatusAsync(rideId, dto.Status,dto.Reason);
             if (ride == null)
                 return NotFound(new { status = false, message = "Ride not found." });
 

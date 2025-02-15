@@ -189,13 +189,14 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
                                  .ToListAsync();
         }
 
-        public async Task<Ride> UpdateRideStatusAsync(int rideId, string status, int? driverId = null)
+        public async Task<Ride> UpdateRideStatusAsync(int rideId, string status,string cancelationReason ,int? driverId = null)
         {
             var ride = await _context.Rides.FindAsync(rideId);
             if (ride == null) throw new KeyNotFoundException("Ride not found");
 
             ride.Status = status;
             ride.DriverId = driverId;
+            ride.CancellationReason = cancelationReason;
 
             await _context.SaveChangesAsync();
             return ride;
