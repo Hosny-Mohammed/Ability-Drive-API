@@ -175,12 +175,15 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
         }
 
 
-        public async Task<IEnumerable<RideDTOForOther>> GetPendingRidesByDriverIdAsync(int driverId)
+        public async Task<IEnumerable<RidesDTOForDriver>> GetPendingRidesByDriverIdAsync(int driverId)
         {
             return await _context.Rides
                                  .Where(r => r.Status == "Pending" && r.DriverId == driverId)
-                                 .Select(r => new RideDTOForOther
+                                 .Select(r => new RidesDTOForDriver
                                  {
+                                     Id = r.Id,
+                                     username = r.User.FirstName + " " +r.User.LastName,
+                                     phoneNumber = r.User.PhoneNumber,
                                      PickupLocation = r.PickupLocation,
                                      Destination = r.Destination,
                                      Cost = r.Cost,
@@ -197,7 +200,7 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
             ride.Status = status;
             ride.DriverId = driverId;
             ride.CancellationReason = cancelationReason;
-
+            _context.Rides.Update(ride);
             await _context.SaveChangesAsync();
             return ride;
         }

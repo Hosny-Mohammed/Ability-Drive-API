@@ -27,6 +27,7 @@ namespace Ability_Drive_API.DTOs
     public class RideDTOForOther
     {
         public int Id { get; set; }
+
         public string PickupLocation { get; set; }
         public string Destination { get; set; }
         public decimal Cost { get; set; }
@@ -43,5 +44,15 @@ namespace Ability_Drive_API.DTOs
         public decimal Cost { get; set; }
         public DateTime RequestTime { get; set; }
     }
+    public class RidesDTOForDriver
+    {
+        public int Id { get; set; }
+        public string username { get; set; }
+        public string phoneNumber { get; set; }
 
+        public string PickupLocation { get; set; }
+        public string Destination { get; set; }
+        public decimal Cost { get; set; }
+        public string Status { get; set; }
+    }
 }
