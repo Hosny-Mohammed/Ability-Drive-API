@@ -204,20 +204,33 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
             await _context.SaveChangesAsync();
             return ride;
         }
-
-        public async Task<Ride?> AssignDriverToRideAsync(int rideId, int driverId)
+        public async Task<RideStatusUpdateDTO> GetRideStatusAsync(int rideId)
         {
             var ride = await _context.Rides.FindAsync(rideId);
-            if (ride == null || ride.Status != "Pending" || ride.DriverId != null)
+            if (ride == null) throw new KeyNotFoundException("Ride not found");
+
+            var rideDTO = new RideStatusUpdateDTO
             {
-                return null; // Ride not found, already assigned, or not available
-            }
+                Status = ride.Status,
+                Reason = ride.CancellationReason,
+            };
 
-            ride.DriverId = driverId;
-            ride.Status = "Confirmed";
-
-            await _context.SaveChangesAsync();
-            return ride;
+            return rideDTO;
         }
+
+        //public async Task<Ride?> AssignDriverToRideAsync(int rideId, int driverId)
+        //{
+        //    var ride = await _context.Rides.FindAsync(rideId);
+        //    if (ride == null || ride.Status != "Pending" || ride.DriverId != null)
+        //    {
+        //        return null; // Ride not found, already assigned, or not available
+        //    }
+
+        //    ride.DriverId = driverId;
+        //    ride.Status = "Confirmed";
+
+        //    await _context.SaveChangesAsync();
+        //    return ride;
+        //}
     }
 }

@@ -61,6 +61,19 @@ namespace Ability_Drive_API.Controllers
             var rides = await _rideRepository.GetPendingRidesByDriverIdAsync(driverId);
             return Ok(new { status = true, message = "Available rides retrieved successfully", rides });
         }
+        [HttpGet("{rideId}/check-status")]
+        public async Task<IActionResult> GetRideStatus(int rideId)
+        {
+            try
+            {
+                var ride = await _rideRepository.GetRideStatusAsync(rideId);
+                return Ok(new { status = true, message = "Ride status retrieved successfully", ride });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new { status = false, message = "Ride not found." });
+            }
+        }
 
         [HttpPut("{rideId}/status")]
         public async Task<IActionResult> UpdateRideStatus(int rideId, [FromBody] RideStatusUpdateDTO dto)

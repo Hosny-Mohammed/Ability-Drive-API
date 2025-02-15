@@ -8,6 +8,7 @@ public interface IRideRepository
     Task<Ride> UpdateRideStatusAsync(int rideId, string status, string cancelationReason, int? driverId = null);
     Task<IEnumerable<BusSchedule>> GetBusSchedulesAsync();
     Task<SeatBookingDTO?> BookBusSeatAsync(int userId, int busScheduleId);
-    Task<Ride?> AssignDriverToRideAsync(int rideId, int driverId); // NEW: Assign ride to driver
-    
+    Task<RideStatusUpdateDTO> GetRideStatusAsync(int rideId);
+    //Task<Ride?> AssignDriverToRideAsync(int rideId, int driverId); // NEW: Assign ride to driver
+
 }
