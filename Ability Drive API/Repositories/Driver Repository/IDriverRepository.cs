@@ -10,5 +10,6 @@ namespace Ability_Drive_API.Repositories.Driver_Repository
         Task<Driver?> GetDriverByIdAsync(int driverId);
         Task<List<DriverDTOGet>> GetAllAvailableDriversAsync(string? preferredLocation = null, string? lastKnownLocation = null);
         Task<bool> UpdateDriverAvailabilityAsync(int driverId, bool isAvailable);
+        Task<(bool success, string message, string lastKnownLocation)> UpdateLastKnownLocation(int driverId, string location);
     }
 }
