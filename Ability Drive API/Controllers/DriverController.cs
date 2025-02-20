@@ -74,6 +74,15 @@ namespace Ability_Drive_API.Controllers
 
             return Ok(new { status = true, message = "Available drivers retrieved successfully", drivers });
         }
+        [HttpPut("update-location/{driverId}")]
+        public async Task<IActionResult> UpdateLastKnownLocation(int driverId, [FromQuery] string location)
+        {
+            var (success, message, lastKnownLocation) = await _driverRepository.UpdateLastKnownLocation(driverId, location);
+
+            if (!success) return NotFound(new { status = false, message });
+
+            return Ok(new { status = true, message, lastKnownLocation });
+        }
 
     }
 }

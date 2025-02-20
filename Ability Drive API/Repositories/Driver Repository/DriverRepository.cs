@@ -71,6 +71,17 @@ namespace Ability_Drive_API.Repositories.Driver_Repository
                 .AsNoTracking() // Improves performance for read-only queries
                 .FirstOrDefaultAsync(d => d.Id == driverId);
         }
+        public async Task<(bool success, string message, string lastKnownLocation)> UpdateLastKnownLocation(int driverId, string location)
+        {
+            var driver = await _context.Drivers.FindAsync(driverId);
+            if (driver == null) return (false, "Driver not found.", null);
+
+            driver.LastKnownLocation = location;
+            _context.Drivers.Update(driver);
+            await _context.SaveChangesAsync();
+
+            return (true, "Location updated successfully.", driver.LastKnownLocation);
+        }
 
     }
 }
