@@ -198,7 +198,7 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
             if (ride == null) throw new KeyNotFoundException("Ride not found");
 
             ride.Status = status;
-            ride.DriverId = driverId;
+            //ride.DriverId = driverId;
             ride.CancellationReason = cancelationReason;
             _context.Rides.Update(ride);
             await _context.SaveChangesAsync();
