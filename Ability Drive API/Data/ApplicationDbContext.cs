@@ -132,6 +132,7 @@ namespace Ability_Drive_API.Data
                     TotalDisabledSeats = 2,
                     AvailableDisabledSeats = 2,
                     IsWheelchairAccessible = true,
+                    Price = 50
                 },
                 new BusSchedule
                 {
@@ -145,6 +146,7 @@ namespace Ability_Drive_API.Data
                     TotalDisabledSeats = 3,
                     AvailableDisabledSeats = 3,
                     IsWheelchairAccessible = true,
+                    Price = 50
                 },
                 new BusSchedule
                 {
@@ -158,6 +160,7 @@ namespace Ability_Drive_API.Data
                     TotalDisabledSeats = 2,
                     AvailableDisabledSeats = 2,
                     IsWheelchairAccessible = true,
+                    Price = 50
                 }
             );
 
