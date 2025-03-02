@@ -39,7 +39,7 @@ namespace Ability_Drive_API.Models
         [Required]
         public bool IsWheelchairAccessible { get; set; }
         [Required]
-        public int Price { get; set; }
+        public double Price { get; set; }
 
         // Navigation property
         public ICollection<SeatBooking> SeatBookings { get; set; } = new List<SeatBooking>();

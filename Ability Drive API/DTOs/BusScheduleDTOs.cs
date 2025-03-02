@@ -30,6 +30,6 @@ namespace Ability_Drive_API.DTOs
         [Required(ErrorMessage = "Wheelchair accessibility status is required.")]
         public bool IsWheelchairAccessible { get; set; }
 
-        public int Price { get; set; }
+        public double Price { get; set; }
     }
 }
