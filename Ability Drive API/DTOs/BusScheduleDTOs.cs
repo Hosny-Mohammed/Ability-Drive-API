@@ -30,10 +30,6 @@ namespace Ability_Drive_API.DTOs
         [Required(ErrorMessage = "Wheelchair accessibility status is required.")]
         public bool IsWheelchairAccessible { get; set; }
 
-        [Required(ErrorMessage = "Priority seating status is required.")]
-        public bool HasPrioritySeating { get; set; }
-
-        [Required(ErrorMessage = "Audio announcements status is required.")]
-        public bool HasAudioAnnouncements { get; set; }
+        public int Price { get; set; }
     }
 }

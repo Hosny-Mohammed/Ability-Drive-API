@@ -167,13 +167,23 @@ namespace Ability_Drive_API.Repositories.Ride_Repository
             };
         }
 
-
-
-        public async Task<IEnumerable<BusSchedule>> GetBusSchedulesAsync()
+        public async Task<IEnumerable<BusScheduleDTO>> GetBusSchedulesAsync()
         {
-            return await _context.BusSchedules.ToListAsync();
+            return await _context.BusSchedules
+                .Select(bus => new BusScheduleDTO
+                {
+                    Id = bus.Id,
+                    BusNumber = bus.BusNumber,
+                    DepartureTime = bus.DepartureTime,
+                    FromLocation = bus.FromLocation,
+                    ToLocation = bus.ToLocation,
+                    AvailableNormalSeats = bus.AvailableNormalSeats,
+                    AvailableDisabledSeats = bus.AvailableDisabledSeats,
+                    IsWheelchairAccessible = bus.IsWheelchairAccessible,
+                    Price = bus.Price
+                })
+                .ToListAsync();
         }
-
 
         public async Task<IEnumerable<RidesDTOForDriver>> GetPendingRidesByDriverIdAsync(int driverId)
         {
